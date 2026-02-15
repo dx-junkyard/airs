@@ -1,0 +1,204 @@
+// Prisma schema file for AIRS (LINE Report AI System)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Report {
+  id                String                                @id @default(cuid())
+  animalType        String // enum: monkey, deer, wild_boar, bear, other
+  latitude          Float
+  longitude         Float
+  location          Unsupported("geometry(Point, 4326)")? // PostGIS空間検索用
+  address           String
+  normalizedAddress Json? // 正規化住所 { prefecture, city, oaza, aza, detail, full, areaKey }
+  phoneNumber       String?
+  images            Json                                  @default("[]") // [{url: string, description: string}, ...]
+  description       String?
+  status            String // enum: waiting, in_progress, completed
+  hasOnlyDate       Boolean                               @default(false)
+  staffId           String? // 担当者ID
+  createdAt         DateTime                              @default(now())
+  updatedAt         DateTime                              @updatedAt
+  deletedAt         DateTime?
+
+  // リレーション
+  staff            Staff?        @relation(fields: [staffId], references: [id])
+  eventReports     EventReport[]
+  representativeOf Event[]       @relation("RepresentativeReport")
+
+  @@index([deletedAt])
+  @@index([status])
+  @@index([animalType])
+  @@index([staffId])
+  @@index([location], type: Gist)
+  @@map("reports")
+}
+
+model Event {
+  id                     String                                @id @default(cuid())
+  representativeReportId String?
+  centerLatitude         Float
+  centerLongitude        Float
+  centerLocation         Unsupported("geometry(Point, 4326)")? // PostGIS空間検索用
+  staffId                String? // 担当者ID
+  createdAt              DateTime                              @default(now())
+  updatedAt              DateTime                              @updatedAt
+  deletedAt              DateTime?
+
+  // リレーション
+  staff                Staff?        @relation(fields: [staffId], references: [id])
+  eventReports         EventReport[]
+  representativeReport Report?       @relation("RepresentativeReport", fields: [representativeReportId], references: [id])
+
+  @@index([deletedAt])
+  @@index([centerLatitude, centerLongitude])
+  @@index([staffId])
+  @@index([centerLocation], type: Gist)
+  @@map("events")
+}
+
+model EventReport {
+  id        String    @id @default(cuid())
+  eventId   String
+  reportId  String    @unique // 1通報は1イベントにのみ所属
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  event  Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+  @@index([reportId])
+  @@index([deletedAt])
+  @@map("event_reports")
+}
+
+model Staff {
+  id        String    @id @default(cuid())
+  name      String
+  email     String? // メールアドレス（任意）
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  // リレーション
+  reports        Report[]
+  events         Event[]
+  locations      StaffLocation[]
+  facilities     Facility[]
+  adminPasswords AdminPassword[]
+  bulkActions    BulkAction[]
+
+  @@index([deletedAt])
+  @@map("staffs")
+}
+
+model StaffLocation {
+  id        String                                @id @default(cuid())
+  staffId   String
+  latitude  Float
+  longitude Float
+  location  Unsupported("geometry(Point, 4326)")? // PostGIS空間検索用
+  label     String? // ピンのラベル（例：「北部担当エリア」）
+  createdAt DateTime                              @default(now())
+  updatedAt DateTime                              @updatedAt
+  deletedAt DateTime?
+
+  // リレーション
+  staff Staff @relation(fields: [staffId], references: [id])
+
+  @@index([staffId])
+  @@index([deletedAt])
+  @@index([location], type: Gist)
+  @@map("staff_locations")
+}
+
+model LineSession {
+  id         String   @id @default(cuid())
+  lineUserId String   @unique
+  step       String // SimulationStep値
+  state      Json // LineSessionState（JSON列）
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  expiresAt  DateTime // 24h TTL
+
+  @@index([lineUserId])
+  @@index([expiresAt])
+  @@map("line_sessions")
+}
+
+model Facility {
+  id         String                                @id @default(cuid())
+  staffId    String
+  overpassId String
+  name       String
+  category   String
+  latitude   Float
+  longitude  Float
+  location   Unsupported("geometry(Point, 4326)")? // PostGIS空間検索用
+  isShared   Boolean                               @default(false)
+  createdAt  DateTime                              @default(now())
+  updatedAt  DateTime                              @updatedAt
+  deletedAt  DateTime?
+
+  // リレーション
+  staff Staff @relation(fields: [staffId], references: [id])
+
+  @@index([staffId])
+  @@index([staffId, overpassId])
+  @@index([deletedAt])
+  @@index([isShared])
+  @@index([location], type: Gist)
+  @@map("facilities")
+}
+
+model SystemSetting {
+  id        String   @id @default(cuid())
+  value     Json // SystemSettingValue（JSON列）
+  createdAt DateTime @default(now())
+
+  @@map("system_settings")
+}
+
+model AdminPassword {
+  id             String    @id @default(cuid())
+  hashedPassword String
+  staffId        String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  staff Staff? @relation(fields: [staffId], references: [id])
+
+  @@index([deletedAt])
+  @@map("admin_passwords")
+}
+
+model BulkAction {
+  id           String   @id @default(cuid())
+  actionKey    String // "csv-import" 等のアクション識別子
+  status       String // "pending" | "processing" | "completed" | "failed"
+  fileUrl      String // CSVファイルURL（Vercel Blob / GCS等）
+  staffId      String? // 実行者ID
+  totalCount   Int      @default(0)
+  successCount Int      @default(0)
+  errorCount   Int      @default(0)
+  result       Json? // CsvImportResultDto (完了時にセット)
+  errorMessage String? // 致命的エラー時のメッセージ
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // リレーション
+  staff Staff? @relation(fields: [staffId], references: [id])
+
+  @@index([actionKey, createdAt])
+  @@index([staffId])
+  @@map("bulk_actions")
+}

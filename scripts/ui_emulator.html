@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>青梅市 報告内容整理チャット - エミュレーター</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 800px;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .message.user {
+            justify-content: flex-end;
+        }
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+        .message.user .message-bubble {
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .message.assistant .message-bubble {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 4px;
+        }
+        .message-info {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+            padding: 0 5px;
+        }
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+        #messageInput {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+        }
+        #messageInput:focus {
+            border-color: #667eea;
+        }
+        #sendButton {
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        #sendButton:hover {
+            background: #5568d3;
+        }
+        #sendButton:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            background: #f9f9f9;
+        }
+        .category-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 青梅市 報告内容整理チャット</h1>
+            <p>獣害・インフラ損傷・ごみ問題などの通報内容を整理します</p>
+        </div>
+        <div class="chat-area" id="chatArea">
+            <div class="message assistant">
+                <div class="message-bubble">
+                    こんにちは。青梅市 報告内容整理システムです。<br>
+                    獣害・インフラ損傷・ごみ問題などの通報内容について、必要な情報をヒアリングして整理いたします。<br>
+                    お気軽にご報告ください。
+                </div>
+            </div>
+        </div>
+        <div class="status" id="status">準備完了</div>
+        <div class="input-area">
+            <div class="input-container">
+                <input type="text" id="messageInput" placeholder="メッセージを入力してください（例: イノシシが畑を荒らしています）" />
+                <button id="sendButton">送信</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api/v1/oume/report';
+        const chatArea = document.getElementById('chatArea');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const status = document.getElementById('status');
+
+        let userId = 'test-user-' + Date.now();
+
+        function addMessage(content, isUser, category = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'assistant'}`;
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.innerHTML = content.replace(/\n/g, '<br>');
+            
+            if (category && !isUser) {
+                const badge = document.createElement('div');
+                badge.className = 'category-badge';
+                badge.textContent = `カテゴリ: ${category}`;
+                bubble.appendChild(badge);
+            }
+            
+            messageDiv.appendChild(bubble);
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, true);
+            messageInput.value = '';
+            sendButton.disabled = true;
+            status.textContent = '送信中...';
+
+            const requestBody = {
+                user_id: userId,
+                message: message,
+                conversation_history: []  // 青梅市向けエンドポイント用
+            };
+
+            console.log('送信リクエスト:', {
+                url: API_URL,
+                method: 'POST',
+                body: requestBody
+            });
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                console.log('レスポンス受信:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    ok: response.ok
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('HTTPエラー:', {
+                        status: response.status,
+                        statusText: response.statusText,
+                        body: errorText
+                    });
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}\n${errorText}`);
+                }
+
+                const responseData = await response.json();
+                const aiResponse = responseData.ai_response || responseData;
+                console.log('AI応答受信:', responseData);
+                status.textContent = '受信完了';
+                
+                // カテゴリ情報も表示
+                let displayMessage = aiResponse;
+                if (responseData.category) {
+                    displayMessage += `\n\n【カテゴリ】${responseData.category}`;
+                }
+                if (responseData.missing_slots && responseData.missing_slots.length > 0) {
+                    displayMessage += `\n【不足情報】${responseData.missing_slots.join(', ')}`;
+                }
+                addMessage(displayMessage, false);
+            } catch (error) {
+                console.error('エラー詳細:', error);
+                const errorMessage = error.message || 'Unknown error';
+                status.textContent = 'エラー: ' + errorMessage;
+                
+                let errorDisplay = '申し訳ありません。エラーが発生しました。\n\n';
+                errorDisplay += 'エラー内容: ' + errorMessage + '\n\n';
+                errorDisplay += '【確認事項】\n';
+                errorDisplay += '1. APIサーバーが起動しているか確認\n';
+                errorDisplay += '2. ブラウザのコンソール（F12）で詳細を確認\n';
+                errorDisplay += '3. API_URL: ' + API_URL;
+                
+                addMessage(errorDisplay, false);
+            } finally {
+                sendButton.disabled = false;
+                status.textContent = '準備完了';
+            }
+        }
+
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // 初期化
+        status.textContent = 'API: ' + API_URL;
+    </script>
+</body>
+</html>

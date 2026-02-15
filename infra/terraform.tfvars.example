@@ -1,0 +1,46 @@
+# =============================================================================
+# GCP プロジェクト設定
+# =============================================================================
+
+project_id  = "your-gcp-project-id"
+region      = "asia-northeast1"
+environment = "prod"
+
+# =============================================================================
+# Cloud SQL 設定
+# =============================================================================
+
+# 開発/検証: db-f1-micro（無料枠）
+# 本番推奨:  db-custom-1-3840
+db_tier = "db-f1-micro"
+
+# =============================================================================
+# Cloud Run 設定
+# =============================================================================
+
+cloudrun_min_instances = 0
+cloudrun_max_instances = 10
+cloudrun_cpu           = "1"
+cloudrun_memory        = "512Mi"
+geo_provider           = "yahoo" # yahoo | nominatim
+nominatim_user_agent   = "AIRS/1.0 (wildlife-report-system)"
+
+# =============================================================================
+# シークレット（terraform.tfvars にはコミットしない）
+# =============================================================================
+
+report_token_secret       = ""
+line_channel_access_token = ""
+line_channel_secret       = ""
+yahoo_geocoding_app_id    = ""
+line_friend_qr_url        = ""
+line_friend_add_url       = ""
+
+# =============================================================================
+# カスタムドメイン（オプション）
+# =============================================================================
+
+# 空文字でドメインマッピングをスキップ
+# 事前にドメイン所有権の認証が必要: https://www.google.com/webmasters/verification/home
+custom_domain       = ""  # 例: "airs.example.com"
+admin_custom_domain = ""  # 例: "airs-admin.example.com"

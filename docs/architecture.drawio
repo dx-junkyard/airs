@@ -1,0 +1,360 @@
+<mxfile host="65bd71144e">
+    <diagram name="System Architecture" id="system-arch">
+        <mxGraphModel dx="871" dy="668" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="actor-line-user" value="LINE ユーザー&#xa;（通報者）" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="190" y="30" width="40" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor-citizen" value="一般市民&#xa;（閲覧者）" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="530" y="30" width="40" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor-admin" value="管理者&#xa;（職員）" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="980" y="30" width="40" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="line-platform" value="LINE Platform" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#06C755;strokeColor=#06C755;fontColor=#ffffff;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="160" width="180" height="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="gcp-boundary" value="" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_region;strokeColor=#4285F4;fillColor=none;verticalAlign=top;align=left;spacingLeft=30;fontColor=#4285F4;dashed=0;labelBackgroundColor=#ffffff;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="270" width="1500" height="790" as="geometry"/>
+                </mxCell>
+                <mxCell id="gemini" value="Vertex AI（Gemini）&#xa;（分析AI / LINE通報AI / チャットボット）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#34A853;strokeColor=#34A853;fontColor=#ffffff;fontSize=12;fontStyle=1;" parent="gcp-boundary" vertex="1">
+                    <mxGeometry x="1270" y="170" width="190" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="gsi-osm" value="Yahoo逆ジオコーダー / Nominatim (OSM)&#xa;（逆ジオコーディング / 周辺検索）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a73e8;strokeColor=#1a73e8;fontColor=#ffffff;fontSize=10;fontStyle=1;" parent="gcp-boundary" vertex="1">
+                    <mxGeometry x="1270" y="250" width="190" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="gcp-label" value="Google Cloud Platform" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#4285F4;" parent="gcp-boundary" vertex="1">
+                    <mxGeometry x="30" width="220" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="dns-normal" value="airs.example.com&lt;br&gt;(CNAME → ghs.googlehosted.com)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9AB00;fontSize=10;" parent="gcp-boundary" vertex="1">
+                    <mxGeometry x="260" y="50" width="260" height="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="dns-admin" value="airs-admin.example.com&lt;br&gt;(CNAME → ghs.googlehosted.com)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9AB00;fontSize=10;" parent="gcp-boundary" vertex="1">
+                    <mxGeometry x="700" y="50" width="290" height="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="cloudrun-boundary" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#4285F4;dashed=1;container=1;collapsible=0;recursiveResize=0;" parent="gcp-boundary" vertex="1">
+                    <mxGeometry x="60" y="130" width="1100" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="cloudrun-icon" value="" style="shape=mxgraph.gcp2.cloud_run;fillColor=#4285F4;strokeColor=none;" parent="cloudrun-boundary" vertex="1">
+                    <mxGeometry x="10" y="8" width="28" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="cloudrun-title" value="Cloud Run" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#4285F4;" parent="cloudrun-boundary" vertex="1">
+                    <mxGeometry x="42" y="8" width="100" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="cloudrun-normal" value="&lt;b&gt;airs&lt;/b&gt;&lt;br&gt;（通常モード / ADMIN_MODE=0）&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;• 通報閲覧 / 地図表示 / ダッシュボード&lt;br&gt;• LINE Webhook 受信&lt;br&gt;• AI通報シミュレーター / ヘルプチャット&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#4285F4;fontSize=11;align=center;verticalAlign=middle;" parent="cloudrun-boundary" vertex="1">
+                    <mxGeometry x="30" y="45" width="280" height="135" as="geometry"/>
+                </mxCell>
+                <mxCell id="cloudrun-admin" value="&lt;b&gt;airs-admin&lt;/b&gt;&lt;br&gt;（管理者モード / ADMIN_MODE=1）&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;• 通報管理 / 一括ステータス更新&lt;br&gt;• 職員管理 / 施設共有管理 / システム設定&lt;br&gt;• 分析AI / 管理者チャットボット&lt;br&gt;• ダッシュボード / 統計&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FD;strokeColor=#9334E6;fontSize=11;align=center;verticalAlign=middle;" parent="cloudrun-boundary" vertex="1">
+                    <mxGeometry x="760" y="45" width="300" height="135" as="geometry"/>
+                </mxCell>
+                <mxCell id="shared-label" value="&lt;i&gt;共通: Service Account / Secret Manager / Cloud SQL / GCS&lt;/i&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#999999;" parent="cloudrun-boundary" vertex="1">
+                    <mxGeometry x="340" y="90" width="390" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="vpc-boundary" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#E91E63;dashed=1;container=1;collapsible=0;recursiveResize=0;" parent="gcp-boundary" vertex="1">
+                    <mxGeometry x="240" y="400" width="480" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="vpc-icon" value="" style="shape=mxgraph.gcp2.virtual_private_cloud;fillColor=#4285F4;strokeColor=none;" parent="vpc-boundary" vertex="1">
+                    <mxGeometry x="10" y="6" width="22" height="18" as="geometry"/>
+                </mxCell>
+                <mxCell id="vpc-title" value="VPC (airs-vpc / 10.0.0.0/20)" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontStyle=1;fontColor=#E91E63;" parent="vpc-boundary" vertex="1">
+                    <mxGeometry x="35" y="2" width="250" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="vpc-connector" value="Serverless VPC&#xa;Access Connector&#xa;(airs-vpc-cx)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#E91E63;fontSize=9;" parent="vpc-boundary" vertex="1">
+                    <mxGeometry x="25" y="35" width="160" height="65" as="geometry"/>
+                </mxCell>
+                <mxCell id="cloudsql-proxy" value="Cloud SQL&#xa;Auth Proxy&#xa;(/cloudsql)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#E91E63;fontSize=9;" parent="vpc-boundary" vertex="1">
+                    <mxGeometry x="285" y="35" width="160" height="65" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-vpc-proxy" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E91E63;" parent="vpc-boundary" source="vpc-connector" target="cloudsql-proxy" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="gcs-icon" value="" style="shape=mxgraph.gcp2.cloud_storage;fillColor=#4285F4;strokeColor=none;" parent="gcp-boundary" vertex="1">
+                    <mxGeometry x="107" y="575" width="36" height="29" as="geometry"/>
+                </mxCell>
+                <mxCell id="gcs" value="Cloud Storage (GCS)&#xa;画像ストレージ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#34A853;fontSize=10;fontStyle=1;" parent="gcp-boundary" vertex="1">
+                    <mxGeometry x="60" y="610" width="150" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="cloudsql-icon" value="" style="shape=mxgraph.gcp2.cloud_sql;fillColor=#4285F4;strokeColor=none;" parent="gcp-boundary" vertex="1">
+                    <mxGeometry x="398" y="575" width="34" height="29" as="geometry"/>
+                </mxCell>
+                <mxCell id="cloudsql" value="Cloud SQL PostgreSQL&#xa;(airs-db-prod)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#E91E63;fontSize=10;fontStyle=1;" parent="gcp-boundary" vertex="1">
+                    <mxGeometry x="350" y="610" width="150" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="secret-icon" value="" style="shape=mxgraph.gcp2.key_management_service;fillColor=#4285F4;strokeColor=none;" parent="gcp-boundary" vertex="1">
+                    <mxGeometry x="703" y="575" width="34" height="29" as="geometry"/>
+                </mxCell>
+                <mxCell id="secret-manager" value="Secret Manager&#xa;(API Keys, DB URL, LINE Tokens)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FD;strokeColor=#9334E6;fontSize=10;fontStyle=1;" parent="gcp-boundary" vertex="1">
+                    <mxGeometry x="640" y="610" width="180" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="ar-icon" value="" style="shape=mxgraph.gcp2.container_registry;fillColor=#4285F4;strokeColor=none;" parent="gcp-boundary" vertex="1">
+                    <mxGeometry x="1043" y="575" width="34" height="29" as="geometry"/>
+                </mxCell>
+                <mxCell id="artifact-registry" value="Artifact Registry&#xa;(airs:latest, airs:admin)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9AB00;fontSize=10;fontStyle=1;" parent="gcp-boundary" vertex="1">
+                    <mxGeometry x="960" y="610" width="220" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-lineuser-platform" value="通報" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=10;fontStyle=1;" parent="1" source="actor-line-user" target="line-platform" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-citizen-dns" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=10;" parent="1" source="actor-citizen" target="dns-normal" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-admin-dns" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=10;" parent="1" source="actor-admin" target="dns-admin" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-line-cloudrun" value="Webhook&#xa;POST /api/line/webhook" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;fontColor=#06C755;" parent="1" source="line-platform" target="cloudrun-normal" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="210" y="240"/>
+                            <mxPoint x="210" y="470"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="edge-dns-normal" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#4285F4;" parent="1" source="dns-normal" target="cloudrun-normal" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-dns-admin" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#9334E6;" parent="1" source="dns-admin" target="cloudrun-admin" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-normal-vpc" value="DB接続" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;fontColor=#E91E63;strokeColor=#E91E63;" parent="1" source="cloudrun-normal" target="vpc-connector" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="280" y="640"/>
+                            <mxPoint x="280" y="710"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="edge-admin-vpc" value="DB接続" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;fontColor=#E91E63;strokeColor=#E91E63;" parent="1" source="cloudrun-admin" target="cloudsql-proxy" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1030" y="640"/>
+                            <mxPoint x="1030" y="710"/>
+                            <mxPoint x="680" y="710"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="edge-proxy-sql" value="Private IP" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;fontColor=#E91E63;strokeColor=#E91E63;" parent="1" source="cloudsql-proxy" target="cloudsql" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-normal-gcs" value="画像" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;dashed=1;strokeColor=#34A853;" parent="1" source="cloudrun-normal" target="gcs" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="200" y="640"/>
+                            <mxPoint x="200" y="880"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="edge-admin-gemini" value="AI 分析&#xa;(自然言語→SQL)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;fontColor=#34A853;fontStyle=1;strokeColor=#34A853;" parent="1" source="cloudrun-admin" target="gemini" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1300" y="465"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="edge-normal-gemini" value="AI 通報処理&#xa;(Vertex AI)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;fontColor=#34A853;fontStyle=1;strokeColor=#34A853;dashed=1;" parent="1" source="cloudrun-normal" target="gemini" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="350" y="560"/>
+                            <mxPoint x="1320" y="560"/>
+                            <mxPoint x="1320" y="465"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="edge-normal-gsi-osm" value="Yahoo/Nominatim&#xa;逆ジオコーディング・周辺検索" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;dashed=1;strokeColor=#1a73e8;" parent="1" source="cloudrun-normal" target="gsi-osm" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="350" y="610"/>
+                            <mxPoint x="1320" y="610"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram name="LINE 通報フロー" id="usecase-line">
+        <mxGraphModel dx="697" dy="534" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="530" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="l-title" value="LINE 通報フロー" style="text;html=1;align=left;verticalAlign=middle;fontSize=18;fontStyle=1;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="10" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="l-desc" value="LINEユーザーが動物目撃を通報 → Webhook → airs が受信・AI処理 → DB保存・画像保存・住所変換（Yahoo/Nominatim）・AI応答" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="38" width="600" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="l-actor" value="LINE ユーザー&#xa;（通報者）" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="210" width="40" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="l-line" value="LINE Platform" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#06C755;strokeColor=#06C755;fontColor=#ffffff;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="180" y="215" width="150" height="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="l-cr" value="&lt;b&gt;airs&lt;/b&gt;&lt;br&gt;（Cloud Run）&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;• LINE Webhook 受信&lt;br&gt;• AI 通報処理 (Vertex AI)&lt;br&gt;• 画像保存・逆ジオコーディング&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#4285F4;fontSize=11;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="420" y="170" width="250" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="l-gemini" value="Vertex AI（Gemini）&#xa;（AI 応答生成）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#34A853;strokeColor=#34A853;fontColor=#ffffff;fontSize=10;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="780" y="80" width="170" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="l-sql" value="Cloud SQL&#xa;PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#E91E63;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="780" y="170" width="170" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="l-gcs" value="Cloud Storage&#xa;画像ストレージ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#34A853;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="780" y="260" width="170" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="l-gsi-osm" value="Yahoo逆ジオコーダー / Nominatim (OSM)&#xa;（逆ジオコーディング / 周辺検索）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a73e8;strokeColor=#1a73e8;fontColor=#ffffff;fontSize=10;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="780" y="350" width="170" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="l-e1" value="① 通報送信" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=10;fontStyle=1;" parent="1" source="l-actor" target="l-line" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="l-e2" value="② Webhook" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=10;fontColor=#06C755;fontStyle=1;" parent="1" source="l-line" target="l-cr" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="l-e3" value="③ 通報保存" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;fontStyle=1;strokeColor=#E91E63;" parent="1" source="l-cr" target="l-sql" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="710" y="210"/>
+                            <mxPoint x="710" y="195"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="l-e4" value="④ 画像保存" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;fontStyle=1;strokeColor=#34A853;" parent="1" source="l-cr" target="l-gcs" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="720" y="260"/>
+                            <mxPoint x="720" y="285"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="l-e5" value="⑤ 逆ジオコーディング / 周辺検索" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;fontStyle=1;dashed=1;strokeColor=#1a73e8;" parent="1" source="l-cr" target="l-gsi-osm" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="730" y="280"/>
+                            <mxPoint x="730" y="375"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="l-e6" value="⑥ AI応答生成" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;fontStyle=1;strokeColor=#34A853;" parent="1" source="l-cr" target="l-gemini" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="700" y="190"/>
+                            <mxPoint x="700" y="105"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram name="一般ユーザーフロー" id="usecase-citizen">
+        <mxGraphModel dx="697" dy="534" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="380" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="c-title" value="一般ユーザーフロー" style="text;html=1;align=left;verticalAlign=middle;fontSize=18;fontStyle=1;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="10" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-desc" value="一般市民が通報一覧・地図・ダッシュボードを閲覧（読み取り専用）" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="38" width="500" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-actor" value="一般市民&#xa;（閲覧者）" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="150" width="40" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-domain" value="airs.example.com&#xa;(HTTPS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9AB00;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="180" y="155" width="190" height="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-cr" value="&lt;b&gt;airs&lt;/b&gt;&lt;br&gt;（Cloud Run）&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;• 通報一覧 / 詳細閲覧&lt;br&gt;• 地図表示 (Leaflet)&lt;br&gt;• ダッシュボード閲覧&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F0FE;strokeColor=#4285F4;fontSize=11;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="130" width="240" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-sql" value="Cloud SQL&#xa;PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#E91E63;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="130" width="170" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-gcs" value="Cloud Storage&#xa;画像配信 (Public)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#34A853;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="230" width="170" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-e1" value="① 閲覧" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=10;fontStyle=1;" parent="1" source="c-actor" target="c-domain" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-e2" value="② HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=10;fontStyle=1;strokeColor=#F9AB00;" parent="1" source="c-domain" target="c-cr" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="c-e3" value="③ データ取得" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;fontStyle=1;strokeColor=#E91E63;" parent="1" source="c-cr" target="c-sql" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="740" y="170"/>
+                            <mxPoint x="740" y="155"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="c-e4" value="④ 画像取得" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;fontStyle=1;strokeColor=#34A853;" parent="1" source="c-cr" target="c-gcs" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="740" y="220"/>
+                            <mxPoint x="740" y="255"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram name="職員フロー" id="usecase-admin">
+        <mxGraphModel dx="697" dy="534" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="480" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="a-title" value="職員フロー" style="text;html=1;align=left;verticalAlign=middle;fontSize=18;fontStyle=1;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="10" width="300" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="a-desc" value="管理者が通報/職員/施設/設定を管理し、分析AIやダッシュボードを活用する（運用管理 + 分析）" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fontColor=#666666;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="38" width="500" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="a-actor" value="管理者&#xa;（職員）" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="190" width="40" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="a-domain" value="airs-admin&#xa;.example.com&#xa;(HTTPS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F9AB00;fontSize=10;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="175" y="190" width="170" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="a-cr" value="&lt;b&gt;airs-admin&lt;/b&gt;&lt;br&gt;（Cloud Run）&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;• 通報管理 / 一括ステータス更新&lt;br&gt;• 職員管理 / 施設共有管理&lt;br&gt;• システム設定 / 管理者ヘルプ&lt;br&gt;• 分析AI / ダッシュボード&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E8FD;strokeColor=#9334E6;fontSize=11;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="150" width="250" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="a-sql" value="Cloud SQL&#xa;PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#E91E63;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="110" width="170" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="a-gcs" value="Cloud Storage&#xa;画像ストレージ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#34A853;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="210" width="170" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="a-gemini" value="Vertex AI（Gemini）&#xa;（AI 分析）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#34A853;strokeColor=#34A853;fontColor=#ffffff;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="310" width="170" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="a-e1" value="① 管理操作" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=10;fontStyle=1;" parent="1" source="a-actor" target="a-domain" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="a-e2" value="② HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=10;fontStyle=1;strokeColor=#F9AB00;" parent="1" source="a-domain" target="a-cr" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="a-e3" value="③ CRUD" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;fontStyle=1;strokeColor=#E91E63;" parent="1" source="a-cr" target="a-sql" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="730" y="195"/>
+                            <mxPoint x="730" y="135"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="a-e4" value="④ 画像管理" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;fontStyle=1;strokeColor=#34A853;" parent="1" source="a-cr" target="a-gcs" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="740" y="235"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="a-e5" value="⑤ 自然言語→SQL" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;fontStyle=1;strokeColor=#34A853;" parent="1" source="a-cr" target="a-gemini" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="750" y="275"/>
+                            <mxPoint x="750" y="335"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
